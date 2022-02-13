@@ -11,8 +11,7 @@ import AlertToast
 struct ServiceView: View {
     var storageManager = ServiceFirebaseHelper()
     //MARK: category dropdown
-    @State private var categoryList = [categoryServiceListModel(categoryName: "Car wash", categoryKeys: "carwash"),
-                                       categoryServiceListModel(categoryName: "Car repair", categoryKeys: "carrepair"), categoryServiceListModel(categoryName: "AC repair", categoryKeys: "acrepair"), categoryServiceListModel(categoryName: "Calender", categoryKeys: "calender"), categoryServiceListModel(categoryName: "Car rental", categoryKeys: "carrental"), categoryServiceListModel(categoryName: "Charities", categoryKeys: "charities")]
+    @ObservedObject private var categoryList = homeServiceList()
     @State private var selectedCategoryName = "Select service"
     @State private var selectedCategoryKey = ""
     @State private var isExpandCategoryList = false
@@ -59,13 +58,13 @@ struct ServiceView: View {
                             GroupBox {
                                 DisclosureGroup(self.selectedCategoryName, isExpanded: $isExpandCategoryList) {
                                     VStack{
-                                        ForEach(self.categoryList.indices, id: \.self){ idx in
-                                            let item = self.categoryList[idx]
-                                            Text("\(item.categoryName)").font(.system(size: 16)).foregroundColor(.black)
+                                        ForEach(self.categoryList.homeMenuCategoryList.indices, id: \.self){ idx in
+                                            let item = self.categoryList.homeMenuCategoryList[idx]
+                                            Text("\(item.title)").font(.system(size: 16)).foregroundColor(.black)
                                                 .padding()
                                                 .onTapGesture {
-                                                    self.selectedCategoryName = item.categoryName
-                                                    self.selectedCategoryKey = item.categoryKeys
+                                                    self.selectedCategoryName = item.title
+                                                    self.selectedCategoryKey = item.name
                                                     withAnimation{
                                                         self.isExpandCategoryList.toggle()
                                                     }
@@ -78,6 +77,9 @@ struct ServiceView: View {
                                 
                             }.padding([.trailing, .top, .bottom])
                                 .shadow(color: .purple,radius: 8)
+                                .onAppear{
+                                    self.categoryList.fetchHomeMenuCategoryData()
+                                }
                         }
                         
                         HStack {

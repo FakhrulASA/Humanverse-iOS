@@ -10,6 +10,8 @@ import Firebase
 
 class homeServiceList: ObservableObject {
     @Published var homeServicesList = [homeServiceListModel]()
+    @Published var homeMenuCategoryList = [homeMenuCategoryListModel]()
+    @Published var subscriberList = [getUserSubscriptionListModel]()
 
     let db = Firestore.firestore()
     func fetchData(searchKey: String){
@@ -59,6 +61,42 @@ class homeServiceList: ObservableObject {
                     let docID = queryDocumentSnapshot.documentID
                     
                     return homeServiceListModel(docID: docID,banner: banner, serviceName: serviceName, description: description, price: price, country: countryName, state: stateName, city: cityName, serviceWebsite: websiteName, email: emailAddress)
+                })
+            }
+    }
+    
+    func fetchHomeMenuCategoryData(){
+        db.collection("category")
+            .addSnapshotListener { (querySnapshot, error) in
+                guard let documents = querySnapshot?.documents else {
+                    print("no document found")
+                    return
+                }
+                self.homeMenuCategoryList = documents.map({ queryDocumentSnapshot -> homeMenuCategoryListModel in
+                    let data = queryDocumentSnapshot.data()
+                    let categoryImage = data["image"] as? String ?? ""
+                    let categoryName = data["name"] as? String ?? ""
+                    let categoryTitle = data["title"] as? String ?? ""
+                    
+                    return homeMenuCategoryListModel(image: categoryImage, name: categoryName, title: categoryTitle)
+                })
+            }
+    }
+    
+    func fetchSubscriberData(){
+        db.collection("trialstatus")
+            .whereField("email", isEqualTo: Auth.auth().currentUser?.email ?? "")
+            .addSnapshotListener { (querySnapshot, error) in
+                guard let documents = querySnapshot?.documents else {
+                    print("no document found")
+                    return
+                }
+                self.subscriberList = documents.map({ queryDocumentSnapshot -> getUserSubscriptionListModel in
+                    let data = queryDocumentSnapshot.data()
+                    let subsEmail = data["email"] as? String ?? ""
+                    let subsTime = data["time"] as? String ?? ""
+                    
+                    return getUserSubscriptionListModel(email: subsEmail, time: subsTime)
                 })
             }
     }

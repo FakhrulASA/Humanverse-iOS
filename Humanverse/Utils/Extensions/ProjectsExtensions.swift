@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import StoreKit
 
 //MARK: Extension for get top view controller 
 extension UIApplication {
@@ -70,5 +71,14 @@ extension Date {
         let dateFormatter = DateFormatter()
         dateFormatter.setLocalizedDateFormatFromTemplate("dd/MM/yyyy")
         return dateFormatter.string(from: self)
+    }
+}
+
+//MARK: application review extension
+extension SKStoreReviewController {
+    public static func requestReviewInCurrentScene() {
+        if let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+            requestReview(in: scene)
+        }
     }
 }

@@ -9,8 +9,10 @@ import SwiftUI
 import Firebase
 import PopupView
 import AlertToast
+import StoreKit
 
 struct ProfileView: View {
+    @ObservedObject private var subscriberList = homeServiceList()
     @State private var image = UIImage()
     @State private var showSheet = false
     var storageManager = StorageManager()
@@ -27,6 +29,9 @@ struct ProfileView: View {
     @State private var toastSuccess = false
     @State private var toastError = false
     @State private var toastMessage = ""
+    
+    @State private var subscribeTimeLeft = ""
+    @State private var showSubscribeTimeLeftPopup = false
     
     var body: some View {
         ZStack {
@@ -119,8 +124,42 @@ struct ProfileView: View {
                                     Image(systemName: "questionmark.circle.fill")
                                         .resizable()
                                         .foregroundColor(.gray)
-                                        .frame(width: 50, height: 50, alignment: .center)
+                                        .frame(width: 40, height: 40, alignment: .center)
                                     Text("Help center")
+                                        .font(Font.title3)
+                                        .foregroundColor(.black).opacity(0.7)
+                                        .padding(.leading, 20)
+                                    Spacer()
+                                }
+                            })
+                            
+                            Divider()
+                            Button(action: {
+                                SKStoreReviewController.requestReviewInCurrentScene()
+                            }, label: {
+                                HStack{
+                                    Image(systemName: "star.fill")
+                                        .resizable()
+                                        .foregroundColor(.gray)
+                                        .frame(width: 40, height: 40, alignment: .center)
+                                    Text("Rate Humanverse")
+                                        .font(Font.title3)
+                                        .foregroundColor(.black).opacity(0.7)
+                                        .padding(.leading, 20)
+                                    Spacer()
+                                }
+                            })
+                            
+                            Divider()
+                            Button(action: {
+                                shareHumanVerse()
+                            }, label: {
+                                HStack{
+                                    Image("ic_share")
+                                        .resizable()
+                                        .foregroundColor(.gray)
+                                        .frame(width: 40, height: 40, alignment: .center)
+                                    Text("Share")
                                         .font(Font.title3)
                                         .foregroundColor(.black).opacity(0.7)
                                         .padding(.leading, 20)
@@ -136,7 +175,7 @@ struct ProfileView: View {
                                     Image(systemName: "rectangle.portrait.and.arrow.right")
                                         .resizable()
                                         .foregroundColor(.gray)
-                                        .frame(width: 50, height: 50, alignment: .center)
+                                        .frame(width: 40, height: 40, alignment: .center)
                                     Text("Log out")
                                         .font(Font.title3)
                                         .foregroundColor(.black).opacity(0.7)
@@ -166,16 +205,28 @@ struct ProfileView: View {
                                 .foregroundColor(Color("membership_color"))
                                 .padding(.leading, 10)
                             
-                            Text("Unsubscribed")
+                            Text("Free Membership")
                                 .font(.system(size: 16))
-                                .foregroundColor(Color("unsubscribe_color"))
+                                .foregroundColor(.black)
                                 .padding(.leading, 10)
                             
-                            Text("It's only 5$, lets subscribe")
-                                .font(.system(size: 18))
-                                .bold()
-                                .foregroundColor(Color("profile_secondary_clr"))
-                                .padding(.leading, 10)
+                            if self.subscriberList.subscriberList.count > 0 {
+                                Text("\(self.subscriberList.subscriberList[0].time)")
+                                    .font(.system(size: 18))
+                                    .bold()
+                                    .foregroundColor(Color("profile_secondary_clr"))
+                                    .padding(.leading, 10)
+                                    .onAppear{
+                                        self.subscribeTimeLeft = self.subscriberList.subscriberList[0].time
+                                    }
+                            } else {
+                                Text("0 day left")
+                                    .font(.system(size: 18))
+                                    .bold()
+                                    .foregroundColor(Color("profile_secondary_clr"))
+                                    .padding(.leading, 10)
+                            }
+                            
                         }
                         Spacer()
                     }.padding()
@@ -184,6 +235,10 @@ struct ProfileView: View {
                         .shadow(radius: 8)
                     
                 }).padding()
+                    .onAppear{
+                        self.subscriberList.fetchSubscriberData()
+                        self.showSubscribeTimeLeftPopup = true
+                    }
                 
                 Spacer()
             }
@@ -197,6 +252,8 @@ struct ProfileView: View {
             userNameEditPopup()
         }.popup(isPresented: $showLogoutPopupView, type: .`default`, closeOnTap: false) {
             userLogoutPopup()
+        }.popup(isPresented: $showSubscribeTimeLeftPopup, type: .`default`, closeOnTap: true) {
+            userTimeoutPopup()
         }
         
         .toast(isPresenting: $toastLoading){
@@ -292,6 +349,44 @@ struct ProfileView: View {
         }
     }
     
+    func userTimeoutPopup() -> some View {
+        ZStack {
+            Color.black.opacity(0.5).ignoresSafeArea()
+            VStack{
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .resizable()
+                    .foregroundColor(.white)
+                    .frame(width: 64, height: 64, alignment: .center)
+                
+                Text("Warning!").font(.system(size: 18)).foregroundColor(.white).bold()
+                
+                Text("Your trial membership only \(self.subscribeTimeLeft). Please renew to have access over 100's of services to provide and earn.").font(.system(size: 16)).foregroundColor(.white).textFieldStyle(.roundedBorder)
+                    .lineLimit(4)
+                    .padding()
+                
+                HStack{
+                    Spacer()
+                    NavigationLink(destination: {
+                        PaymentSystemView()
+                    }, label: {
+                        Text("  OKAY  ")
+                            .font(.system(size: 14))
+                            .foregroundColor(.black)
+                            .fontWeight(.bold)
+                    }).frame(width: 100, height: 40)
+                        .background(Color.white)
+                        .cornerRadius(20.0)
+                        .padding(.leading, 20)
+                    
+                }.padding(.top, 20)
+            }.padding(EdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20))
+                .frame(width: 350, height: 350)
+                .background(Color("popup_bg"))
+                .cornerRadius(10.0)
+                .shadow(color: Color(.sRGBLinear, white: 0, opacity: 0.13), radius: 10.0)
+        }
+    }
+    
     func compressImage(image: UIImage) -> UIImage {
         let resizedImage = image.aspectFittedToHeight(300)
         resizedImage.jpegData(compressionQuality: 0.2) // Add this line
@@ -345,6 +440,16 @@ struct ProfileView: View {
         } catch let signOutError as NSError {
           print("Error signing out: %@", signOutError)
         }
+        
+    }
+    
+    private func shareHumanVerse(){
+        guard let data = URL(string: "https://sites.google.com/view/humanverse/home") else { return }
+                let av = UIActivityViewController(activityItems: [data], applicationActivities: nil)
+        UIApplication.shared.connectedScenes
+            .filter({$0.activationState == .foregroundActive})
+            .compactMap({$0 as? UIWindowScene})
+            .first?.windows.first?.rootViewController?.present(av, animated: true, completion: nil)
     }
 }
 

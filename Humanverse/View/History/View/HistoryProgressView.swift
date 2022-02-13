@@ -103,13 +103,7 @@ struct HistoryProgressView: View {
                     
                     Button(action: {
                         let supportEmail = tempItem.provider
-                        if let url = URL(string: "mailto:\(supportEmail)") {
-                          if #available(iOS 10.0, *) {
-                            UIApplication.shared.open(url)
-                          } else {
-                            UIApplication.shared.openURL(url)
-                          }
-                        }
+                        EmailHelper.shared.sendEmail(subject: "", body: "", to: supportEmail)
                     }, label: {
                         HStack {
                             Spacer()

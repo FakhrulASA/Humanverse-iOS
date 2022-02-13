@@ -6,18 +6,23 @@
 //
 
 import SwiftUI
+import AlertToast
+import PopupView
 
 struct HomeView: View {
-    @State private var optionList = [homeOptionListModel(optionID: 1, optionName: "Car Rent", optionKey: "carrental", optionImageName: "ic_car_rent"),
-                                     homeOptionListModel(optionID: 2, optionName: "Car Wash", optionKey: "carwash", optionImageName: "ic_car_wash"),
-                                     homeOptionListModel(optionID: 3, optionName: "Auto Repair", optionKey: "carrepair", optionImageName: "ic_auto_repair"),
-                                     homeOptionListModel(optionID: 4, optionName: "Calender", optionKey: "calender", optionImageName: "ic_calender"),
-                                     homeOptionListModel(optionID: 5, optionName: "Charities", optionKey: "charities", optionImageName: "ic_charities"),
-                                     homeOptionListModel(optionID: 6, optionName: "AC Service", optionKey: "acrepair", optionImageName: "ic_ac_repair")]
+    
+    @ObservedObject private var menuList = homeServiceList()
+    @State private var toastLoading = false
+    @State private var toastSuccess = false
+    @State private var toastError = false
+    @State private var toastMessage = ""
     
     let layout = [GridItem(.flexible()),
                   GridItem(.flexible()),
                   GridItem(.flexible())]
+    
+    @State private var subscribeTimeLeft = ""
+    @State private var showSubscribeTimeLeftPopup = false
     
     var body: some View {
         ZStack {
@@ -36,21 +41,59 @@ struct HomeView: View {
                     }.padding([.leading, .trailing])
                     
                     VStack{
-                        LazyVGrid(columns: layout, spacing: 10) {
-                            ForEach(self.optionList.indices, id: \.self){ idx in
-                                let item = self.optionList[idx]
-                                NavigationLink(destination: {
-                                    HomeServicesView(searchName: item.optionName, searchKeys: item.optionKey)
-                                }, label: {
-                                    HomeOptionCell(item: item)
-                                })
-                                
+                        if self.menuList.homeMenuCategoryList.count > 5 {
+                            LazyVGrid(columns: layout, spacing: 10) {
+                                ForEach(0..<6){ idx in
+                                    let item = self.menuList.homeMenuCategoryList[idx]
+                                    NavigationLink(destination: {
+                                        HomeServicesView(searchName: item.title, searchKeys: item.name)
+                                    }, label: {
+                                        HomeOptionCell(item: item)
+                                    })
+
+                                }
+                            }
+                        } else {
+                            LazyVGrid(columns: layout, spacing: 10) {
+                                ForEach(self.menuList.homeMenuCategoryList.indices, id: \.self){ idx in
+                                    let item = self.menuList.homeMenuCategoryList[idx]
+                                    NavigationLink(destination: {
+                                        HomeServicesView(searchName: item.title, searchKeys: item.name)
+                                    }, label: {
+                                        HomeOptionCell(item: item)
+                                    })
+
+                                }
                             }
                         }
+                        
                     }.padding([.leading, .trailing])
+                        .onAppear{
+                            self.toastLoading = true
+                            self.menuList.fetchHomeMenuCategoryData()
+                            self.toastLoading = false
+                            
+                        }
+                    
+                    if self.menuList.subscriberList.count > 0 {
+                        Text("\(self.menuList.subscriberList[0].time)")
+                            .font(.system(size: 18))
+                            .bold()
+                            .foregroundColor(.white)
+                            .padding(.leading, 10)
+                            .onAppear{
+                                self.subscribeTimeLeft = self.menuList.subscriberList[0].time
+                            }
+                    } else {
+                        Text("0 day left")
+                            .font(.system(size: 18))
+                            .bold()
+                            .foregroundColor(.white)
+                            .padding(.leading, 10)
+                    }
                     
                     NavigationLink(destination: {
-                        HomeServicesView(searchName: "", searchKeys: "")
+                        AllServiceCategoryView()
                     }, label: {
                         HStack(alignment: .center, spacing: 5, content: {
                             Spacer()
@@ -62,11 +105,61 @@ struct HomeView: View {
                             .cornerRadius(8)
                             .padding([.leading, .trailing, .top])
                             .shadow(radius: 8)
+                            
                     
                     })
+                }.onAppear{
+                    self.menuList.fetchSubscriberData()
+                    self.showSubscribeTimeLeftPopup = true
                 }
             })
             
+        }.toast(isPresenting: $toastLoading){
+            AlertToast(type: .loading, subTitle: "Loading")
+        }.toast(isPresenting: $toastSuccess){
+            AlertToast(type: .complete(Color(.green)), title: self.toastMessage)
+        }.toast(isPresenting: $toastError){
+            AlertToast(type: .error(Color(.red)), title: self.toastMessage)
+        }.popup(isPresented: $showSubscribeTimeLeftPopup, type: .`default`, closeOnTap: true) {
+            userTimeoutPopup()
+        }
+    }
+    
+    func userTimeoutPopup() -> some View {
+        ZStack {
+            Color.black.opacity(0.5).ignoresSafeArea()
+            VStack{
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .resizable()
+                    .foregroundColor(.white)
+                    .frame(width: 64, height: 64, alignment: .center)
+                
+                Text("Warning!").font(.system(size: 18)).foregroundColor(.white).bold()
+                
+                Text("Your trial membership only \(self.subscribeTimeLeft). Please renew to have access over 100's of services to provide and earn.").font(.system(size: 16)).foregroundColor(.white).textFieldStyle(.roundedBorder)
+                    .lineLimit(4)
+                    .padding()
+                
+                HStack{
+                    Spacer()
+                    NavigationLink(destination: {
+                        PaymentSystemView()
+                    }, label: {
+                        Text("  OKAY  ")
+                            .font(.system(size: 14))
+                            .foregroundColor(.black)
+                            .fontWeight(.bold)
+                    }).frame(width: 100, height: 40)
+                        .background(Color.white)
+                        .cornerRadius(20.0)
+                        .padding(.leading, 20)
+                    
+                }.padding(.top, 20)
+            }.padding(EdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20))
+                .frame(width: 350, height: 350)
+                .background(Color("popup_bg"))
+                .cornerRadius(10.0)
+                .shadow(color: Color(.sRGBLinear, white: 0, opacity: 0.13), radius: 10.0)
         }
     }
 }

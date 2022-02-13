@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F41BD12327B9788A00A6667C /* AllServiceCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F41BD12227B9788A00A6667C /* AllServiceCategoryView.swift */; };
+		F41BD12727B9964F00A6667C /* PaymentSystemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F41BD12627B9964F00A6667C /* PaymentSystemView.swift */; };
+		F41BD12927B9A1C000A6667C /* EmailHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F41BD12827B9A1C000A6667C /* EmailHelper.swift */; };
 		F438B9BD27B18C0B00955FF5 /* ImageWithURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = F438B9BC27B18C0B00955FF5 /* ImageWithURL.swift */; };
 		F4613106279711A90080939A /* HumanverseApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4613105279711A90080939A /* HumanverseApp.swift */; };
 		F461310A279711AD0080939A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4613109279711AD0080939A /* Assets.xcassets */; };
@@ -56,6 +59,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F41BD12227B9788A00A6667C /* AllServiceCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllServiceCategoryView.swift; sourceTree = "<group>"; };
+		F41BD12627B9964F00A6667C /* PaymentSystemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentSystemView.swift; sourceTree = "<group>"; };
+		F41BD12827B9A1C000A6667C /* EmailHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailHelper.swift; sourceTree = "<group>"; };
 		F438B9BC27B18C0B00955FF5 /* ImageWithURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageWithURL.swift; sourceTree = "<group>"; };
 		F4613102279711A80080939A /* Humanverse.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Humanverse.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4613105279711A90080939A /* HumanverseApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HumanverseApp.swift; sourceTree = "<group>"; };
@@ -364,6 +370,7 @@
 				F49EF4E027B761F6005FD0E3 /* HomeServicesView.swift */,
 				F49EF4E627B771A8005FD0E3 /* HomeServiceOrderDetails.swift */,
 				F492530E27B78F1C00C4A725 /* HomeServicesDetailsView.swift */,
+				F41BD12227B9788A00A6667C /* AllServiceCategoryView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -455,6 +462,7 @@
 			isa = PBXGroup;
 			children = (
 				F4C84CD227A1D9140064F4DC /* ProfileView.swift */,
+				F41BD12627B9964F00A6667C /* PaymentSystemView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -496,6 +504,7 @@
 			isa = PBXGroup;
 			children = (
 				F492531727B7EAF700C4A725 /* HistoryListController.swift */,
+				F41BD12827B9A1C000A6667C /* EmailHelper.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -588,6 +597,8 @@
 			files = (
 				F48C446B27B6D25B00CD20CD /* ServiceFirebaseHelper.swift in Sources */,
 				F49EF4E527B76436005FD0E3 /* HomeServiceList.swift in Sources */,
+				F41BD12727B9964F00A6667C /* PaymentSystemView.swift in Sources */,
+				F41BD12327B9788A00A6667C /* AllServiceCategoryView.swift in Sources */,
 				F4613106279711A90080939A /* HumanverseApp.swift in Sources */,
 				F492530F27B78F1C00C4A725 /* HomeServicesDetailsView.swift in Sources */,
 				F492531A27B7F4C200C4A725 /* HistoryProgressView.swift in Sources */,
@@ -610,6 +621,7 @@
 				F4C84CBE27A1B8490064F4DC /* HomeModels.swift in Sources */,
 				F48197C6279C7277000A9956 /* Constants.swift in Sources */,
 				F492531427B7B37600C4A725 /* HistoryListModel.swift in Sources */,
+				F41BD12927B9A1C000A6667C /* EmailHelper.swift in Sources */,
 				F49EF4E127B761F6005FD0E3 /* HomeServicesView.swift in Sources */,
 				F49EF4E727B771A8005FD0E3 /* HomeServiceOrderDetails.swift in Sources */,
 				F4C84CC327A1D2000064F4DC /* HomeMainView.swift in Sources */,

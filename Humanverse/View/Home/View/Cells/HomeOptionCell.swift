@@ -8,19 +8,18 @@
 import SwiftUI
 
 struct HomeOptionCell: View {
-    @State var item: homeOptionListModel
+    @State var item: homeMenuCategoryListModel
     var body: some View {
         VStack (alignment: .center, spacing: 10){
             VStack {
-                Image(item.optionImageName)
-                    .resizable()
+                ImageWithURL(item.image)
                     .cornerRadius(12)
                     .shadow(radius: 5)
                     .frame(width: 90,height: 90)
             }
             .frame(width: 90,height: 90)
             
-            Text(item.optionName).font(.system(size: 16)).bold().foregroundColor(.black)
+            Text(item.title).font(.system(size: 16)).bold().foregroundColor(.black)
                 .lineLimit(1)
         }.padding()
             .background(.white)
@@ -31,6 +30,6 @@ struct HomeOptionCell: View {
 
 struct HomeOptionCell_Previews: PreviewProvider {
     static var previews: some View {
-        HomeOptionCell(item: homeOptionListModel(optionID: 3, optionName: "Auto Repair", optionKey: "carrepair", optionImageName: "ic_auto_repair"))
+        HomeOptionCell(item: homeMenuCategoryListModel(image: "https://www.kingsfund.org.uk/sites/default/files/2017-06/Social%20care%20teaser.png", name: "adultcare", title: "Adult care"))
     }
 }
