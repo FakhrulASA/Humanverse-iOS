@@ -142,8 +142,8 @@ struct HomeView: View {
                 
                 HStack{
                     Spacer()
-                    NavigationLink(destination: {
-                        PaymentSystemView()
+                    Button(action: {
+                        self.showSubscribeTimeLeftPopup = false
                     }, label: {
                         Text("  OKAY  ")
                             .font(.system(size: 14))
@@ -172,7 +172,7 @@ struct HomeView_Previews: PreviewProvider {
 
 //For Image Slider
 struct SliderView: View {
-    @State private var imageSliderList = [homeImageSliderModel(sliderId: 1, sliderImageName: "img_banner_one"), homeImageSliderModel(sliderId: 2, sliderImageName: "img_banner_two")]
+    @State private var imageSliderList = [homeImageSliderModel(sliderId: 3, sliderImageName: "img_banner_three")]
     private let timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
     @State private var currentIndex = 0
     
@@ -194,10 +194,17 @@ struct SliderView: View {
                     ForEach(self.imageSliderList.indices, id: \.self) { idx in
                         VStack{
                             Image(self.imageSliderList[idx].sliderImageName)
+                                .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(height: 240)
                                 .cornerRadius(12)
-                                .shadow(radius: 5)
+                                .shadow(radius: 12)
+                                .padding([.leading, .trailing])
+                                .onTapGesture{
+                                    if let url = URL(string: "https://21c5b6k6p9-8wjnh9ec3bl0y3j.hop.clickbank.net/") {
+                                           UIApplication.shared.open(url)
+                                        }
+                                }
                         }
                     }
                 }

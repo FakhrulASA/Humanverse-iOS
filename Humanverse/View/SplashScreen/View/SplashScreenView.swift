@@ -20,7 +20,7 @@ struct SplashScreenView: View {
                         LoginScreenView()
                     }
                 } else {
-                    Image("img_short_logo").resizable().frame(width: 180, height: 180, alignment: .center)
+                    Image("img_short_splash").resizable().frame(width: 220, height: 220, alignment: .center)
                 }
             }
         }.onAppear{

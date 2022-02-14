@@ -114,131 +114,142 @@ struct ProfileView: View {
                     .onAppear{
                         getUserNameFStore()
                     }
-                
-                    VStack(alignment: .center, spacing: 10, content: {
-                        VStack {
-                            NavigationLink(destination: {
-                                HelpCenterView()
-                            }, label: {
-                                HStack{
-                                    Image(systemName: "questionmark.circle.fill")
-                                        .resizable()
-                                        .foregroundColor(.gray)
-                                        .frame(width: 40, height: 40, alignment: .center)
-                                    Text("Help center")
-                                        .font(Font.title3)
-                                        .foregroundColor(.black).opacity(0.7)
-                                        .padding(.leading, 20)
-                                    Spacer()
-                                }
-                            })
+                ScrollView(.vertical, showsIndicators: false, content: {
+                    VStack{
+                        VStack(alignment: .center, spacing: 10, content: {
+                            VStack {
+                                NavigationLink(destination: {
+                                    HelpCenterView()
+                                }, label: {
+                                    HStack{
+                                        Image(systemName: "questionmark.circle.fill")
+                                            .resizable()
+                                            .foregroundColor(.gray)
+                                            .frame(width: 40, height: 40, alignment: .center)
+                                        Text("Help center")
+                                            .font(Font.title3)
+                                            .foregroundColor(.black).opacity(0.7)
+                                            .padding(.leading, 20)
+                                        Spacer()
+                                    }
+                                })
+                                
+                                Divider()
+                                Button(action: {
+                                    SKStoreReviewController.requestReviewInCurrentScene()
+                                }, label: {
+                                    HStack{
+                                        Image(systemName: "star.fill")
+                                            .resizable()
+                                            .foregroundColor(.gray)
+                                            .frame(width: 40, height: 40, alignment: .center)
+                                        Text("Rate Humanverse")
+                                            .font(Font.title3)
+                                            .foregroundColor(.black).opacity(0.7)
+                                            .padding(.leading, 20)
+                                        Spacer()
+                                    }
+                                })
+                                
+                                Divider()
+                                Button(action: {
+                                    shareHumanVerse()
+                                }, label: {
+                                    HStack{
+                                        Image("ic_share")
+                                            .resizable()
+                                            .foregroundColor(.gray)
+                                            .frame(width: 40, height: 40, alignment: .center)
+                                        Text("Share")
+                                            .font(Font.title3)
+                                            .foregroundColor(.black).opacity(0.7)
+                                            .padding(.leading, 20)
+                                        Spacer()
+                                    }
+                                })
+                                
+                                Divider()
+                                Button(action: {
+                                    self.showLogoutPopupView = true
+                                }, label: {
+                                    HStack{
+                                        Image(systemName: "rectangle.portrait.and.arrow.right")
+                                            .resizable()
+                                            .foregroundColor(.gray)
+                                            .frame(width: 40, height: 40, alignment: .center)
+                                        Text("Log out")
+                                            .font(Font.title3)
+                                            .foregroundColor(.black).opacity(0.7)
+                                            .padding(.leading, 20)
+                                        Spacer()
+                                    }
+                                })
+                                
+                            }.padding()
+                                .background()
+                                .cornerRadius(8)
+                                .shadow(radius: 8)
                             
-                            Divider()
-                            Button(action: {
-                                SKStoreReviewController.requestReviewInCurrentScene()
-                            }, label: {
+                        }).padding()
+                        
+                        VStack(alignment: .center, spacing: 10, content: {
+                            VStack {
                                 HStack{
                                     Image(systemName: "star.fill")
                                         .resizable()
-                                        .foregroundColor(.gray)
-                                        .frame(width: 40, height: 40, alignment: .center)
-                                    Text("Rate Humanverse")
-                                        .font(Font.title3)
-                                        .foregroundColor(.black).opacity(0.7)
-                                        .padding(.leading, 20)
-                                    Spacer()
-                                }
-                            })
-                            
-                            Divider()
-                            Button(action: {
-                                shareHumanVerse()
-                            }, label: {
-                                HStack{
-                                    Image("ic_share")
-                                        .resizable()
-                                        .foregroundColor(.gray)
-                                        .frame(width: 40, height: 40, alignment: .center)
-                                    Text("Share")
-                                        .font(Font.title3)
-                                        .foregroundColor(.black).opacity(0.7)
-                                        .padding(.leading, 20)
-                                    Spacer()
-                                }
-                            })
-                            
-                            Divider()
-                            Button(action: {
-                                self.showLogoutPopupView = true
-                            }, label: {
-                                HStack{
-                                    Image(systemName: "rectangle.portrait.and.arrow.right")
-                                        .resizable()
-                                        .foregroundColor(.gray)
-                                        .frame(width: 40, height: 40, alignment: .center)
-                                    Text("Log out")
-                                        .font(Font.title3)
-                                        .foregroundColor(.black).opacity(0.7)
-                                        .padding(.leading, 20)
-                                    Spacer()
-                                }
-                            })
-                            
-                        }.padding()
-                            .background()
-                            .cornerRadius(8)
-                            .shadow(radius: 8)
-                        
-                    }).padding()
-                
-                VStack(alignment: .center, spacing: 10, content: {
-                    HStack{
-                        Image(systemName: "star.fill")
-                            .resizable()
-                            .frame(width: 70, height: 70, alignment: .center)
-                            .foregroundColor(Color.yellow)
-                        
-                        VStack(alignment: .leading,spacing:10){
-                            Text("Membership status")
-                                .font(.system(size: 20))
-                                .bold()
-                                .foregroundColor(Color("membership_color"))
-                                .padding(.leading, 10)
-                            
-                            Text("Free Membership")
-                                .font(.system(size: 16))
-                                .foregroundColor(.black)
-                                .padding(.leading, 10)
-                            
-                            if self.subscriberList.subscriberList.count > 0 {
-                                Text("\(self.subscriberList.subscriberList[0].time)")
-                                    .font(.system(size: 18))
-                                    .bold()
-                                    .foregroundColor(Color("profile_secondary_clr"))
-                                    .padding(.leading, 10)
-                                    .onAppear{
-                                        self.subscribeTimeLeft = self.subscriberList.subscriberList[0].time
+                                        .frame(width: 70, height: 70, alignment: .center)
+                                        .foregroundColor(Color.yellow)
+                                    
+                                    VStack(alignment: .leading,spacing:10){
+                                        Text("Membership status")
+                                            .font(.system(size: 20))
+                                            .bold()
+                                            .foregroundColor(Color("membership_color"))
+                                            .padding(.leading, 10)
+                                        
+                                        Text("Free Membership")
+                                            .font(.system(size: 16))
+                                            .foregroundColor(.black)
+                                            .padding(.leading, 10)
+                                        
+                                        if self.subscriberList.subscriberList.count > 0 {
+                                            Text("\(self.subscriberList.subscriberList[0].time)")
+                                                .font(.system(size: 18))
+                                                .bold()
+                                                .foregroundColor(Color("profile_secondary_clr"))
+                                                .padding(.leading, 10)
+                                                .onAppear{
+                                                    self.subscribeTimeLeft = self.subscriberList.subscriberList[0].time
+                                                }
+                                        } else {
+                                            Text("0 day left")
+                                                .font(.system(size: 18))
+                                                .bold()
+                                                .foregroundColor(Color("profile_secondary_clr"))
+                                                .padding(.leading, 10)
+                                        }
+                                        
                                     }
-                            } else {
-                                Text("0 day left")
-                                    .font(.system(size: 18))
-                                    .bold()
-                                    .foregroundColor(Color("profile_secondary_clr"))
-                                    .padding(.leading, 10)
-                            }
+                                    Spacer()
+                                }
+                                
+//                                Text("Even with the free trial, it will help to let them know how much  it will  be  after the  trial, please add the following...").font(.system(size: 15)).foregroundColor(.black)
+//                                    .multilineTextAlignment(.center)
+                                Divider()
+                                Text("You need to be a  member to  post, membership  is only $5/mo, No  other fees. Cancel  anytime, Apple pay or Google pay able to be a member here.").font(.system(size: 15)).foregroundColor(.black)
+                                    .multilineTextAlignment(.center)
+                            }.padding()
+                                .background()
+                                .cornerRadius(8)
+                            .shadow(radius: 8)
                             
-                        }
-                        Spacer()
-                    }.padding()
-                        .background()
-                        .cornerRadius(8)
-                        .shadow(radius: 8)
-                    
-                }).padding()
-                    .onAppear{
-                        self.subscriberList.fetchSubscriberData()
-                        self.showSubscribeTimeLeftPopup = true
+                        }).padding()
+                            .onAppear{
+                                self.subscriberList.fetchSubscriberData()
+                                self.showSubscribeTimeLeftPopup = true
+                            }
                     }
+                })
                 
                 Spacer()
             }
@@ -366,8 +377,8 @@ struct ProfileView: View {
                 
                 HStack{
                     Spacer()
-                    NavigationLink(destination: {
-                        PaymentSystemView()
+                    Button(action: {
+                        self.showSubscribeTimeLeftPopup = false
                     }, label: {
                         Text("  OKAY  ")
                             .font(.system(size: 14))
@@ -377,6 +388,7 @@ struct ProfileView: View {
                         .background(Color.white)
                         .cornerRadius(20.0)
                         .padding(.leading, 20)
+                    
                     
                 }.padding(.top, 20)
             }.padding(EdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20))
